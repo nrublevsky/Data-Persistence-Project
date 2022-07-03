@@ -21,6 +21,18 @@ public class MainManager : MonoBehaviour
     public static MainManager instance;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
+    }
+
     void Start()
     {
         const float step = 0.6f;
@@ -82,10 +94,7 @@ public class MainManager : MonoBehaviour
         public int bestScore;
     }
 
-    public void StartGame()
-    {
-        SceneManager.LoadScene(0);
-    }
+    
 
 
 }
