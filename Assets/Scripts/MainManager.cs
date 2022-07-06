@@ -97,6 +97,7 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        Debug.Log("Saved score:" + m_Points);
     }
 
 }

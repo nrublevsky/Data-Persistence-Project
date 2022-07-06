@@ -37,21 +37,21 @@ public class StartMenuManager : MonoBehaviour
     void Update()
     {
 
-        //SaveName(inputedName);
+        GetName(inputedName);
 
-        if (SceneManager.GetActiveScene().name != "Start Menu Scene")
+        if (SceneManager.GetActiveScene().name != "StartMenuScene")
         {
-
-
+            BestNameScoreText = GameObject.Find("Best Score name").GetComponent<Text>();
+            SetBestScore();
         }
     }
 
-    // public void SaveName(string pName)
-    //{
-    // pName = nameField.text;
-    //  inputedName = pName;
-    //
-    //}
+     public void GetName(string pName)
+    {
+     pName = nameField.text;
+      inputedName = pName;
+    
+    }
     public void StartGame()
     {
         SavePlayerName(inputedName);
@@ -74,9 +74,20 @@ public class StartMenuManager : MonoBehaviour
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+
+        Debug.Log("Saved Name" + data.playerName);
+        Debug.Log("Current best score " + data.bestScore);
     }
 
-    void SetBestScore(string bestName, int currentBestScore)
+    public void SaveBestScore(int bestScore)
+    {
+        SaveData data = new SaveData() { bestScore = bestScore };
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+    public void SetBestScore()
     {
 
         string path = Application.persistentDataPath + "/savefile.json";
@@ -85,10 +96,11 @@ public class StartMenuManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            bestName = data.playerName;
-            currentBestScore = data.bestScore;
+
         }
-         
-        BestNameScoreText.text = "Best Score: " + bestName + " : " + currentBestScore;
+
+
     }
+
+
 }
