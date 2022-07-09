@@ -842,10 +842,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17460912a2b121a4188a5131aff25a2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputedName: 
   nameField: {fileID: 364292539}
   menuManager: {fileID: 0}
-  BestNameScoreText: {fileID: 0}
+  mainManager: {fileID: 0}
+  savedName: 
+  savedScore: 0
 --- !u!4 &887433364
 Transform:
   m_ObjectHideFlags: 0

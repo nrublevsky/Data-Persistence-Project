@@ -12,11 +12,13 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
-    
+    public Text BestScoreText;
+
     public GameObject GameOverText;
 
+
     private bool m_Started = false;
-    private int m_Points;
+    public int m_Points;
 
     private bool m_GameOver = false;
 
@@ -29,15 +31,16 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-                
-
+        startMenuManager = GameObject.Find("Start Menu Manager").GetComponent<StartMenuManager>();
+        instance = this;
+       
     }
 
     void Start()
     {
         sceneName = SceneManager.GetActiveScene().name;
-        if ( sceneName != "StartMenuScene")
-        { 
+        if (sceneName != "StartMenuScene")
+        {
             const float step = 0.6f;
             int perLine = Mathf.FloorToInt(4.0f / step);
 
@@ -53,7 +56,9 @@ public class MainManager : MonoBehaviour
                 }
             }
         }
-        
+
+
+
     }
 
     private void Update()
@@ -75,9 +80,13 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
+        BestScoreText = GameObject.Find("Best Score name").GetComponent<Text>();
+        
+        BestScoreText.text = "Best Score: " + startMenuManager.savedName + " : " + startMenuManager.savedScore;
     }
 
     void AddPoint(int point)
@@ -86,18 +95,18 @@ public class MainManager : MonoBehaviour
         ScoreText.text = $"Score : {m_Points}";
     }
 
-    
-
-    void UpdateBestScore()
-    {
-
-    }
-
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        
+        if (m_Points > startMenuManager.savedScore)
+        {
+            startMenuManager.savedScore = m_Points;
+            startMenuManager.UpdateNameAndScore();
+        }
         Debug.Log("Saved score:" + m_Points);
     }
 
+   
 }

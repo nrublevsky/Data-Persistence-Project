@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,9 +11,14 @@ public class StartMenuManager : MonoBehaviour
     public string inputedName;
     public InputField nameField;
 
-    public StartMenuManager menuManager;
+    public Text bestPlayer;
 
-    public Text BestNameScoreText;
+    public StartMenuManager menuManager;
+    public MainManager mainManager;
+
+    public string savedName;
+    public int savedScore;
+
 
     // Start is called before the first frame update
     private void Awake()
@@ -27,78 +33,80 @@ public class StartMenuManager : MonoBehaviour
     }
 
     void Start()
-    {
-
-        
-
+    {      
+        bestPlayer = GameObject.Find("Best Player").GetComponent<Text>();
+        LoadName();
+        bestPlayer.text = "Best Score: " + savedName +" : "+ savedScore;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        GetName(inputedName);
-
-        if (SceneManager.GetActiveScene().name != "StartMenuScene")
+        if (SceneManager.GetActiveScene().name == "StartMenuScene")
         {
-            BestNameScoreText = GameObject.Find("Best Score name").GetComponent<Text>();
-            SetBestScore();
+            GetName();
+        }
+        else
+        {
+
         }
     }
 
-     public void GetName(string pName)
+    public void GetName()
     {
-     pName = nameField.text;
-      inputedName = pName;
-    
+        inputedName = nameField.text;
     }
     public void StartGame()
     {
-        SavePlayerName(inputedName);
-
+        savedName = inputedName;
+        InitialSaveName();
         SceneManager.LoadScene(0);
     }
 
+    
+    
     [System.Serializable]
-    class SaveData
+    public class SaveData
     {
         public string playerName;
         public int bestScore;
     }
 
-    public void SavePlayerName(string inputName)
+    public void InitialSaveName()
     {
         SaveData data = new SaveData();
-        data.playerName = inputName;
+        data.playerName = inputedName;
+        data.bestScore = 0;
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-
-        Debug.Log("Saved Name" + data.playerName);
-        Debug.Log("Current best score " + data.bestScore);
+        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
     }
-
-    public void SaveBestScore(int bestScore)
+    
+    public void UpdateNameAndScore()
     {
-        SaveData data = new SaveData() { bestScore = bestScore };
+        SaveData data = new SaveData();
+        data.playerName = savedName;
+        data.bestScore = savedScore;
 
+       // string path = "C:/Nick Stuff/GitHub/Data - Persistence - Project/savefile.json";
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
     }
-    public void SetBestScore()
-    {
 
-        string path = Application.persistentDataPath + "/savefile.json";
+   public void LoadName()
+    {
+        string path = "C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
+            savedName = data.playerName;
+            savedScore = data.bestScore;
 
         }
-
 
     }
 
