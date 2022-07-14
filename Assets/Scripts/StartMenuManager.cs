@@ -11,13 +11,17 @@ public class StartMenuManager : MonoBehaviour
     public string inputedName;
     public InputField nameField;
 
-    public Text bestPlayer;
+    public Text bestPlayerText;
 
     public StartMenuManager menuManager;
     public MainManager mainManager;
 
     public string savedName;
+    public string bestPlayerName;
     public int savedScore;
+    public int bestScore;
+
+    public int numberOfGames;
 
 
     // Start is called before the first frame update
@@ -34,9 +38,9 @@ public class StartMenuManager : MonoBehaviour
 
     void Start()
     {      
-        bestPlayer = GameObject.Find("Best Player").GetComponent<Text>();
-        LoadName();
-        bestPlayer.text = "Best Score: " + savedName +" : "+ savedScore;
+        bestPlayerText = GameObject.Find("Best Player").GetComponent<Text>();
+        LoadFromFile();
+        bestPlayerText.text = "Best Score: " + bestPlayerName +" : "+ bestScore;
     }
 
     // Update is called once per frame
@@ -45,11 +49,9 @@ public class StartMenuManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "StartMenuScene")
         {
             GetName();
+            bestPlayerText.text = "Best Score: " + bestPlayerName + " : " + bestScore;
         }
-        else
-        {
-
-        }
+        
     }
 
     public void GetName()
@@ -59,8 +61,15 @@ public class StartMenuManager : MonoBehaviour
     public void StartGame()
     {
         savedName = inputedName;
+        savedScore = 0;
         InitialSaveName();
         SceneManager.LoadScene(0);
+        numberOfGames++;
+    }
+
+    public void ClearBestScore()
+    {
+        ClearScore();
     }
 
     
@@ -68,34 +77,71 @@ public class StartMenuManager : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        public string playerName;
+        public string bestPlayer;
         public int bestScore;
+        public string currentName;
+        public int currentScore;
     }
 
     public void InitialSaveName()
     {
         SaveData data = new SaveData();
-        data.playerName = inputedName;
-        data.bestScore = 0;
+        if (savedName != data.currentName)
+        {
+            data.currentName = savedName;
+        }
+        data.currentScore = 0;
+        data.bestPlayer = bestPlayerName;
+        data.bestScore = bestScore;
+              
 
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
     }
     
-    public void UpdateNameAndScore()
+    public void ClearScore()
     {
         SaveData data = new SaveData();
-        data.playerName = savedName;
-        data.bestScore = savedScore;
+        
+        bestScore = data.bestScore = 0;
+        bestPlayerName = data.bestPlayer = null;
 
-       // string path = "C:/Nick Stuff/GitHub/Data - Persistence - Project/savefile.json";
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+    }
+    public void UpdateWhenBeaten()
+    {
+        
+        SaveData data = new SaveData();
+        bestPlayerName = savedName;
+        data.bestPlayer = bestPlayerName;
+        data.currentName = data.bestPlayer;
+        bestScore = savedScore;
+        data.bestScore = bestScore;
+        data.currentScore = data.bestScore;
+
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
     }
 
-   public void LoadName()
+    public void UpdateNormal()
+    {
+        SaveData data = new SaveData();
+        data.currentName = savedName;
+        data.currentScore = savedScore;
+        data.bestPlayer = bestPlayerName;
+        data.bestScore = bestScore;
+
+        // string path = "C:/Nick Stuff/GitHub/Data - Persistence - Project/savefile.json";
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+    }
+
+    public void LoadFromFile()
     {
         string path = "C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json";
         if (File.Exists(path))
@@ -103,11 +149,11 @@ public class StartMenuManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            savedName = data.playerName;
-            savedScore = data.bestScore;
-
+            savedName = data.currentName;
+            savedScore = data.currentScore;
+            bestPlayerName = data.bestPlayer;
+            bestScore = data.bestScore; 
         }
-
     }
 
 

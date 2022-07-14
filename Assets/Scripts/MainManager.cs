@@ -86,7 +86,7 @@ public class MainManager : MonoBehaviour
         }
         BestScoreText = GameObject.Find("Best Score name").GetComponent<Text>();
         
-        BestScoreText.text = "Best Score: " + startMenuManager.savedName + " : " + startMenuManager.savedScore;
+        BestScoreText.text = "Best Score: " + startMenuManager.bestPlayerName + " : " + startMenuManager.bestScore;
     }
 
     void AddPoint(int point)
@@ -99,13 +99,21 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        
-        if (m_Points > startMenuManager.savedScore)
+
+        if (m_Points <= startMenuManager.bestScore)
         {
-            startMenuManager.savedScore = m_Points;
-            startMenuManager.UpdateNameAndScore();
+            Debug.Log("New score: " + m_Points + " and it's less than " + startMenuManager.bestScore);
+            startMenuManager.UpdateNormal();
         }
-        Debug.Log("Saved score:" + m_Points);
+        else 
+        {
+            Debug.Log("New score: " + m_Points + " and it's bigger than " + startMenuManager.bestScore);
+            startMenuManager.savedScore = m_Points;
+            startMenuManager.UpdateWhenBeaten();
+        }
+       
+        
+        
     }
 
    
