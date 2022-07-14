@@ -64,7 +64,7 @@ public class StartMenuManager : MonoBehaviour
         savedName = inputedName;
         savedScore = 0;
         InitialSaveName();
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
         numberOfGames++;
     }
 
@@ -107,7 +107,7 @@ public class StartMenuManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
     
     public void ClearScore()
@@ -119,7 +119,7 @@ public class StartMenuManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
     public void UpdateWhenBeaten()
     {
@@ -134,7 +134,7 @@ public class StartMenuManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
     public void UpdateNormal()
@@ -148,12 +148,12 @@ public class StartMenuManager : MonoBehaviour
         // string path = "C:/Nick Stuff/GitHub/Data - Persistence - Project/savefile.json";
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText("C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
     public void LoadFromFile()
     {
-        string path = "C:/Nick Stuff/GitHub/Data-Persistence-Project/savefile.json";
+        string path = Application.persistentDataPath + "/savefile.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
